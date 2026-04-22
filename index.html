@@ -18,8 +18,17 @@
 
   <main>
     <section class="search-section">
-      <input type="text" id="search-bar" placeholder="Search for an anime by title (e.g., Spirited Away)...">
-      <button id="search-btn">Search</button>
+    
+      <div class="search-input-wrapper">
+    
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    
+        <input type="text" id="search-bar" placeholder="Search for an anime by title (e.g., Spirited Away)..." autofocus>
+      </div>
     </section>
 
     <section class="controls-section">
@@ -30,11 +39,18 @@
         </select>
       </div>
 
-      <div class="control-group">
-        <label for="genre-filter">Genre:</label>
-        <select id="genre-filter">
-          <option value="all">All Genres</option>
-        </select>
+      <div class="control-group custom-dropdown-group">
+        <label>Genres:</label>
+        <div class="custom-dropdown" id="genre-dropdown-container">
+      
+          <button id="genre-toggle" class="dropdown-toggle">Select Genres <span>▼</span></button>
+      
+          <div id="genre-menu" class="dropdown-menu">
+            <div id="genre-checkbox-container" class="checkbox-grid-2col">Check boxes
+            </div>
+          </div>
+      
+        </div>
       </div>
 
       <div class="control-group">
@@ -45,7 +61,18 @@
       </div>
 
       <div class="control-group surprise-me-group">
-        <button id="surprise-btn">Surprise Me!</button>
+        <button id="reset-btn" class="secondary-btn" title="Cancel filter">
+          <svg fill="#f20202" width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <g stroke-width="0" />
+            <g stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M30 11.414 28.586 10 24 14.586 19.414 10 18 11.414 22.586 16 18 20.585 19.415 22 24 17.414 28.587 22 30 20.587 25.414 16z" />
+            <path
+              d="M4 4a2 2 0 0 0-2 2v3.17a2 2 0 0 0 .586 1.415L10 18v8a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2h-2v2h-4v-8.83l-.586-.585L4 9.171V6h20v2h2V6a2 2 0 0 0-2-2Z" />
+            <path data-name="&lt;Transparent Rectangle&gt;" style="fill:none" d="M0 0h32v32H0z" />
+          </svg>
+        </button>
+        <button id="surprise-btn">Surprise Me!</button> 
       </div>
     </section>
 
@@ -60,7 +87,7 @@
             <option value="score-desc">Score (High to Low)</option>
             <option value="year-desc">Release Year (Newest)</option>
             <option value="year-asc">Release Year (Oldest)</option>
-            <option value="title-asc">Title (A-Z)</option>
+            <option value="title">Title (A-Z)</option>
           </select>
         </div>
       </div>
@@ -74,8 +101,16 @@
         </div>
         <div class="card-content">
           <h3 class="card-title-target">Title Placeholder</h3>
+      
+          <p class="studio-label card-studio-target">Studio Placeholder</p>
+      
           <div class="badges card-genres-target"></div>
-          <p class="synopsis card-synopsis-target">Synopsis placeholder...</p>
+      
+          <div class="synopsis-container">
+            <p class="synopsis card-synopsis-target">Synopsis placeholder...</p>
+            <button class="read-more-btn">Read More</button>
+          </div>
+      
           <div class="card-footer">
             <span class="score card-score-target">⭐ 0.0</span>
             <span class="year card-year-target">0000</span>
