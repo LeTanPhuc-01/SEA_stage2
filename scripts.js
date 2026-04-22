@@ -202,7 +202,7 @@ function sortAnimes(arrayToSort, sortValue) {
       arrayToSort.sort((a, b) => a.title > b.title ? 1 : -1);
       break;
     default:
-      throw new Error("Invalid sort value");
+      break;
   }
 }
 // Give you one random anime from the list
