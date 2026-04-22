@@ -1,4 +1,4 @@
-[
+const anime_data = [
   {
     "id": 1,
     "title": "Spirited Away",
@@ -656,4 +656,4 @@
     "title_synonyms": [],
     "synopsis": "A city as a pulsating organism. Repetitive movements are made by drawing on graph papers. Mirai Mizue's first time experimenting with geometric animation.\n\n(Source: TMDB)"
   }
-]
+];

@@ -36,13 +36,10 @@ const triviaOptions = [
   document.getElementById("btn-d")
 ];
 
-fetch("../assets/anime_data.json")
-  .then(res => res.json())
-  .then(data => {
-    animeData = [...data];
-    showCards(animeData);
-    populateDropdowns(animeData);
-  });
+animeData = [...anime_data];
+showCards(animeData);
+populateDropdowns(animeData);
+
 
 // This function adds cards the page to display the data in the array
 function showCards(animes) {
@@ -70,7 +67,7 @@ function editCardContent(card, anime) {
   cardImage.alt = anime.title + " Poster";
 
   const cardSynopsis = card.querySelector(".card-synopsis-target");
-  cardSynopsis.textContent = anime.synopsis;  
+  cardSynopsis.textContent = anime.synopsis;
 
   const cardScore = card.querySelector(".card-score-target");
   cardScore.textContent = "⭐ " + anime.score + " / 10";
@@ -95,6 +92,49 @@ function editCardContent(card, anime) {
   console.log("new card:", anime.title, "- html: ", card);
 }
 
+// Feature 1: Search with filter including studio, genre, and year
+function searchFilter() {
+  const keyword = searchBar.value.toLowerCase();
+  const studio = studioFilter.value;
+  const year = yearFilter.value;
+  const genres = Array.from(genreContainer.querySelectorAll(".genre-checkbox:checked")).map(cb => cb.value);
+
+  const params = new URLSearchParams();
+  if (keyword) params.set("keyword", keyword);
+  if (studio != "all") params.set("studio", studio);
+  if (year != "all") params.set("year", year);
+  genres.forEach(g => params.append('genre', g));
+
+  // Uses URL object to pass in our params
+  const newUrl = new URL(window.location);
+  newUrl.search = params;
+  // Updates the URL in the browser without reloading the page
+  window.history.replaceState(null, '', newUrl);
+
+  // Filter the data based on parameters
+  const filteredAnimes = animeData.filter(anime => {
+    // Some anime have multiple titles, so we check both title and synopsis
+    const matchesKeyword = anime.title.toLowerCase().includes(keyword) || anime.synopsis.toLowerCase().includes(keyword);
+    const matchesStudio = studio === "all" || anime.studio === studio;
+    const matchesYear = year === "all" || anime.releaseYear === parseInt(year);
+    const matchesGenres = genres.length === 0 || genres.some(g => anime.genres.includes(g));
+    return matchesKeyword && matchesStudio && matchesYear && matchesGenres;
+  });
+
+  const sortValue = sortSelect.value;
+  sortAnimes(filteredAnimes, sortValue);
+
+  // Sort the filtered animes such that the ones with more matched genres rank first
+  if (filteredAnimes.length > 1 && genres.length > 0) {
+    filteredAnimes.sort((a, b) => {
+      const aMatchedGenres = a.genres.filter(g => genres.includes(g)).length;
+      const bMatchedGenres = b.genres.filter(g => genres.includes(g)).length;
+      return bMatchedGenres - aMatchedGenres;
+    });
+  }
+  showCards(filteredAnimes);
+}
+
 // Populate Sort options
 function populateDropdowns(animes) {
   // Using sets for unique values
@@ -107,7 +147,7 @@ function populateDropdowns(animes) {
     uniqueYears.add(anime.releaseYear);
     anime.genres.forEach(genre => uniqueGenres.add(genre));
   });
-  
+
   // Sort lexicographically is fine for studios and genres
   const sortedStudios = [...uniqueStudios].sort();
   const sortedGenres = [...uniqueGenres].sort();
@@ -146,50 +186,8 @@ function populateDropdowns(animes) {
   });
 }
 
-// Feature 1: Search with filter including studio, genre, and year
-function searchFilter() {
-  const keyword = searchBar.value.toLowerCase();
-  const studio = studioFilter.value;
-  const year = yearFilter.value;
-  const genres = Array.from(genreContainer.querySelectorAll(".genre-checkbox:checked")).map(cb => cb.value);
-
-  const params = new URLSearchParams();
-  if (keyword) params.set("keyword", keyword);
-  if (studio != "all") params.set("studio", studio);
-  if (year != "all") params.set("year", year);
-  genres.forEach(g => params.append('genre', g));
-
-  // Uses URL object to pass in our params
-  const newUrl = new URL(window.location); 
-  newUrl.search = params;
-  // Updates the URL in the browser without reloading the page
-  window.history.replaceState(null, '', newUrl);
-
-  // Filter the data based on parameters
-  const filteredAnimes = animeData.filter(anime => {
-    // Some anime have multiple titles, so we check both title and synopsis
-    const matchesKeyword = anime.title.toLowerCase().includes(keyword) || anime.synopsis.toLowerCase().includes(keyword);
-    const matchesStudio = studio === "all" || anime.studio === studio;
-    const matchesYear = year === "all" || anime.releaseYear === parseInt(year);
-    const matchesGenres = genres.length === 0 || genres.some(g => anime.genres.includes(g));
-    return matchesKeyword && matchesStudio && matchesYear && matchesGenres;
-  }); 
-
-  const sortValue = sortSelect.value;
-  sortAnimes(filteredAnimes, sortValue);
-
-  // Sort the filtered animes such that the ones with more matched genres rank first
-  if(filteredAnimes.length > 1 && genres.length > 0) {
-    filteredAnimes.sort((a, b) => {
-      const aMatchedGenres = a.genres.filter(g => genres.includes(g)).length;
-      const bMatchedGenres = b.genres.filter(g => genres.includes(g)).length;
-      return bMatchedGenres - aMatchedGenres;
-    } );
-  }
-  showCards(filteredAnimes);
-}
 // Helper sort function, can be used with pre-existing filtered Animes
-function sortAnimes(arrayToSort, sortValue){
+function sortAnimes(arrayToSort, sortValue) {
   switch (sortValue) {
     case "score-desc":
       arrayToSort.sort((a, b) => b.score - a.score);
@@ -209,9 +207,9 @@ function sortAnimes(arrayToSort, sortValue){
 }
 // Give you one random anime from the list
 function surpriseMe(animes) {
- const random = Math.floor(Math.random() * animes.length);
- resetBtn.click();
- showCards([animes[random]]);
+  const random = Math.floor(Math.random() * animes.length);
+  resetBtn.click();
+  showCards([animes[random]]);
 }
 // Feature 2: Anime Trivia
 function generateTriviaQuestion() {
@@ -242,7 +240,7 @@ function generateTriviaQuestion() {
 
   // Fallback: In case the anime dataset is too small, we choose a different wrong answer
   if (validWrongPool.length < 3) {
-      validWrongPool = animeData.filter(anime => anime.title !== currentCorrectAnime.title);
+    validWrongPool = animeData.filter(anime => anime.title !== currentCorrectAnime.title);
   }
 
   // Shuffle the safe pool and grab 3 guaranteed "wrong" answers
@@ -274,12 +272,12 @@ function generateTriviaQuestion() {
 
   // Populate the 4 buttons with our safely generated options
   triviaOptions.forEach((btn, index) => {
-      btn.textContent = finalOptions[index].title;
-      btn.disabled = false; 
-      btn.style.backgroundColor = "rgba(255, 255, 255, 0.2)"; 
-      btn.style.color = "white";
-      
-      btn.onclick = () => checkTriviaAnswer(finalOptions[index].title, btn);
+    btn.textContent = finalOptions[index].title;
+    btn.disabled = false;
+    btn.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+    btn.style.color = "white";
+
+    btn.onclick = () => checkTriviaAnswer(finalOptions[index].title, btn);
   });
 
   startTriviaBtn.textContent = "Next Question";
@@ -297,7 +295,7 @@ function checkTriviaAnswer(selectedTitle, clickedBtn) {
   } else {
     triviaFeedback.textContent = `Incorrect! The right answer was ${currentCorrectAnime.title}.`;
     clickedBtn.style.backgroundColor = "#e74c3c"; // Turn clicked button Red
-    
+
     // Show correct answer
     triviaOptions.forEach(btn => {
       if (btn.textContent === currentCorrectAnime.title) {
@@ -310,12 +308,12 @@ function checkTriviaAnswer(selectedTitle, clickedBtn) {
 
 // Global event listener for read more buttons of card (event delegation)
 document.addEventListener('click', e => {
-  if(e.target.matches(".read-more-btn")){
+  if (e.target.matches(".read-more-btn")) {
     const readMoreBtn = e.target;
     // Find the closest container, then select the synopsis from it
     const synopsisContainer = readMoreBtn.closest('.synopsis-container');
     const cardSynopsis = synopsisContainer.querySelector('.card-synopsis-target');
-    
+
     cardSynopsis.classList.toggle("expanded");
     // Synopsis expand and collapse based on Read More state
     if (cardSynopsis.classList.contains("expanded")) {
@@ -331,7 +329,7 @@ genreToggle.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (e) => {
-  if (!genreToggle.contains(e.target) && !genreMenu.contains(e.target)){
+  if (!genreToggle.contains(e.target) && !genreMenu.contains(e.target)) {
     genreMenu.classList.remove("open");
   }
 });
@@ -357,15 +355,15 @@ resetBtn.addEventListener('click', () => {
 });
 
 surpriseBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    surpriseMe(animeData);
+  e.preventDefault();
+  surpriseMe(animeData);
 });
 
 // Trivia Game Event Listeners
 openTriviaBtn.addEventListener('click', () => {
   triviaModal.style.display = "flex";
   // Generate new question
-  if(!currentCorrectAnime) {
+  if (!currentCorrectAnime) {
     generateTriviaQuestion();
   }
 });
