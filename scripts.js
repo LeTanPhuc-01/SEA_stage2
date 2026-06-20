@@ -114,7 +114,7 @@ function searchFilter() {
   // Filter the data based on parameters
   const filteredAnimes = animeData.filter(anime => {
     // Some anime have multiple titles, so we check both title and synopsis
-    const matchesKeyword = anime.title.toLowerCase().includes(keyword) || anime.synopsis.toLowerCase().includes(keyword);
+    const matchesKeyword = anime.title.toLowerCase().includes(keyword) || anime.title_synonyms.some(synonym => synonym.toLowerCase().includes(keyword));
     const matchesStudio = studio === "all" || anime.studio === studio;
     const matchesYear = year === "all" || anime.releaseYear === parseInt(year);
     const matchesGenres = genres.length === 0 || genres.some(g => anime.genres.includes(g));
@@ -221,7 +221,7 @@ function generateTriviaQuestion() {
   const categories = ["synopsis", "studio", "year", "score"];
   const selectedCategory = categories[Math.floor(Math.random() * categories.length)];
 
-  // Filter out any animes that share the exact property we are testing
+  // FILTER out any animes that share the exact property we are testing SWITCH CASE
   let validWrongPool = animeData.filter(anime => {
     if (anime.title === currentCorrectAnime.title) return false;
 

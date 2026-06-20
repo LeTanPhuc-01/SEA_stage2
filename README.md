@@ -1,12 +1,13 @@
-# SEA Stage 2 - Data Catalog Project
+# Anime Database - Data Catalog Project
 
-This repository contains the instructions, requirements, and starter code for Stage Two of the Snap Engineering Academy application process.
+This repository contains my Anime Database catalog project, built with Vanilla JavaScript, HTML, and CSS for Stage Two of the Snap Engineering Academy application process.
 
 ---
 
 ## 📚 Table of Contents
 
-- [Your Task](#your-task)
+- [About The Project](#about-the-project)
+- [Features](#features)
 - [Requirements](#requirements---your-catalog-website-should)
 - [Getting Started](#getting-started)
 - [Submitting](#submitting)
@@ -14,12 +15,27 @@ This repository contains the instructions, requirements, and starter code for St
 
 ---
 
-## 🎯 Your Task
+## 🎯 About The Project
 
-### <p align="center">Create a "catalog" website for something you're passionate about.</p>
+### <p align="center">An interactive Anime Database catalog built with Vanilla JS and CSS.</p>
 
 > 📝 **Note:**  
-> If you have not used GitHub or programmed a website with JavaScript before, that's OK! Part of the challenge is figuring out things you're not familiar with.
+> This project demonstrates the use of data structures (arrays and objects) to display and interact with a substantial amount of anime-related data using Vanilla JavaScript.
+
+### 📁 Directory Structure
+- `index.html`: The main HTML file containing the structure of the catalog.
+- `style.css`: Vanilla CSS file for styling the catalog.
+- `scripts.js`: Vanilla JavaScript file containing the logic and data for the anime catalog.
+- `assets/`: Directory containing images and other static assets.
+
+---
+
+## ✨ Features
+
+- **Search by Title**: Quickly find your favorite anime by typing its name.
+- **Filter by Genre & Status**: Narrow down the catalog to show only specific genres (e.g., Action, Romance, Sci-Fi) or airing status (e.g., Ongoing, Completed).
+- **Sort by Score or Year**: Organize the catalog by ratings or release year to easily find the top-rated or newest shows.
+- **Interactive Modals/Cards**: Click on any anime card to view detailed information, including a synopsis, studio, and episode count.
 
 ---
 
